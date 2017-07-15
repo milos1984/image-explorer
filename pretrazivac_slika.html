@@ -1,0 +1,51 @@
+<HTML>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+    <h2> Unesite rec za pretragu! </h2>
+    <input id="sta_hoces" type="text" value="DONKEY" />
+    <button onclick="trazi(1)"> trazi </button>
+    Sortiraj po: 
+    <select id="sortiranje">
+        <option value="popular">popular</option>
+        <option value="latest">latest</option>
+    </select>
+    <div id="rezultati"></div>
+    
+    <script>
+        function trazi(page) {
+            var inputEl = document.getElementById("sta_hoces");
+            var fraza = inputEl.value;
+            var orderBy = document.getElementById("sortiranje").value;
+            var URL = "https://pixabay.com/api/?key=5862191-ca80c355007b08f9fc8fb8d3c&page=" + page + "&order=" + orderBy + "&per_page=20&image_type=illustration&q="+fraza;
+            
+            $.getJSON(URL, function(data){
+                var slike=data.hits;
+                var rezultati = document.getElementById("rezultati");
+                var sadrzaj = '';
+                
+                if (slike.length > 0){
+                    for (var i = 0; i < slike.length; i++){
+                        sadrzaj += "<a href='" + slike[i].userImageURL + "' target='blank'><img src='" + slike[i].previewURL + "' style='margin:5px'/></a>\n";
+                        if ((i+1)%4 ===0)sadrzaj+="<br>";
+                    }
+                        
+                    var broj_strana= Number(data.totalHits);
+                    broj_strana=Math.ceil(broj_strana/20);
+                    sadrzaj+="<br/>izaberite stranu:" + "<br>";
+
+                    for(var p=1; p<=broj_strana; p++){
+                    sadrzaj +="<button onclick='trazi(" + p + ");'>"+ p +"</button>";
+                    }
+                }
+                else {
+                    sadrzaj= "Nema rezultata za vas pojam majmuncino, koristi engleski!!!!";
+                }
+
+                rezultati.innerHTML = sadrzaj;
+            });
+        }
+    </script>
+<body>
+</HTML>
